@@ -9,12 +9,12 @@ spec:
       component: web
   template:
     metadata:
-      label:
+      labels:
         component: web
     spec:
       containers:
         - name: client
-          image: rajuas400/multi-client
+          image: rajuas400/multi-client 
           ports:
             - containerPort: 3000 
                 
