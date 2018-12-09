@@ -3,20 +3,36 @@ kind: Ingress
 metadata:
   name: ingress-service
   annotations:
-    kubernetes.io/ingress.class: nginx 
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
-    # config routing 
-    # / for client
-    # /api for server 
+    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
 spec:
+  tls:
+    - hosts:
+        - myfamily.net.in
+        - www.myfamily.net.in
+      secretName: myfamily-net-in
   rules:
-    - http:
+    - host: myfamily.net.in
+      http:
         paths:
           - path: /
             backend:
               serviceName: client-cluster-ip-service
               servicePort: 3000
-          - path: /api
+          - path: /api/
             backend:
               serviceName: server-cluster-ip-service
-              servicePort:  5000
+              servicePort: 5000
+    - host: www.myfamily.net.in
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api/
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000
